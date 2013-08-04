@@ -5,8 +5,8 @@ class systemproxy::sh {
 
   # Ensure profile.d dir.
   file { "/etc/profile.d for ${name}":
-    path   => '/etc/profile.d',
     ensure => 'directory',
+    path   => '/etc/profile.d',
   }
 
   # Hack on the default files if we need/want to.
@@ -30,7 +30,7 @@ class systemproxy::sh {
   $delim    = '='
   $protos   = prefix($systemproxy::shell_proto, 'export ')
   $no_proxy = prefix(['no_proxy','NO_PROXY'], 'export ')
-  file { "/etc/profile.d/proxy.sh":
+  file { '/etc/profile.d/proxy.sh':
     ensure  => $systemproxy::ensure,
     content => template('systemproxy/proxy.erb'),
     require => File["/etc/profile.d for ${name}"],
