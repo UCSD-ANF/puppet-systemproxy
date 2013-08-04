@@ -4,8 +4,6 @@
 # This class should only be called from init.pp
 class systemproxy::puppet {
 
-  validate_bool($systemproxy::puppet)
-
   $puppet_ensure = $systemproxy::puppet ? {
     true  => $systemproxy::ensure,
     false => 'absent',

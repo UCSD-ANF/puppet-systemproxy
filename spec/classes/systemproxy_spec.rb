@@ -83,10 +83,10 @@ describe 'systemproxy', :type=>'class' do
         context "On a #{oses[os][:operatingsystem]} system" do
           let(:params){{ :host => 'proxy.example.com', }}
 
-          it { should contain_file_line('RPM %_ftpproxy').with_line(
+          it { should contain_file_line('RPM %_httpproxy').with_line(
             '%_httpproxy proxy.example.com'
           )}
-          it { should contain_file_line('RPM %_ftpport').with_line(
+          it { should contain_file_line('RPM %_httpport').with_line(
             '%_httpport 3128'
           )}
           it { should contain_file_line('YUM global proxy').with_line(

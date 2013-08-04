@@ -13,6 +13,9 @@ class systemproxy (
 ) inherits systemproxy::params {
 
   include stdlib
+
+  validate_bool($manage_profile_d)
+  validate_bool($puppet)
   validate_string($no_proxy)
 
   $proxy = "${proto}://${host}:${port}/"
