@@ -21,9 +21,9 @@ class systemproxy::csh {
   }
 
   # Set up C shell proxy.
-  $delim    = ' '
-  $protos   = prefix($systemproxy::shell_proto, 'setenv ')
-  $no_proxy = prefix(['no_proxy','NO_PROXY'], 'setenv ')
+  $delim     = ' '
+  $protos    = prefix($systemproxy::shell_proto, 'setenv ')
+  $no_protos = prefix(['no_proxy','NO_PROXY'], 'setenv ')
   file { '/etc/profile.d/proxy.csh':
     ensure  => $systemproxy::ensure,
     content => template('systemproxy/proxy.erb'),
