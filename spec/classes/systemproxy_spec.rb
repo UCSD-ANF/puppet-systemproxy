@@ -49,11 +49,12 @@ describe 'systemproxy', :type=>'class' do
 
       context "no_proxy" do
         let(:params){{
-          :host     => 'proxy.example.com',
-          :no_proxy => [ '.example.com', 'another.example.com' ]
+          :host             => 'proxy.example.com',
+          :no_proxy_domains => [ '*.example.com', 'some.host.com' ],
+          :no_proxy_nets    => [ '169.254.0.0/16' ]
         }}
         it { should contain_file('/etc/profile.d/proxy.csh').with_content(
-          /setenv no_proxy "\.example\.com,another\.example\.com"/
+          /NO_PROXY "\*\.example\.com,some\.host\.com,169\.254\.0\.0\/16"/
         )}
       end
 
@@ -75,15 +76,16 @@ describe 'systemproxy', :type=>'class' do
         context "and OS family is #{oses[os][:osfamily]}" do
           let(:params){{
             :host     => 'proxy.example.com',
-            :no_proxy => [ '.example.com', 'another.example.com' ]
+            :no_proxy_domains => [ '*.example.com', 'some.host.com' ],
+            :no_proxy_nets    => [ '169.254.0.0/16' ]
           }}
           it { should contain_exec(
             '/usr/sbin/networksetup -setsecurewebproxy Ethernet proxy.example.com 3128 off'
           )}
           it { should contain_exec(
-            '/usr/sbin/networksetup -setproxybypassdomains Ethernet Empty \'.example.com\' \'another.example.com\''
+            '/usr/sbin/networksetup -setproxybypassdomains Ethernet Empty \'*.example.com\' \'some.host.com\' \'169.254.0.0/16\''
           ).with_onlyif(
-            /egrep -v '\.example.com\|another\.example\.com'/
+            /fgrep -v -e '\*\.example.com' -e 'some\.host\.com' -e '169\.254\.0\.0\/16'/
           )}
         end
       when 'FreeBSD' then

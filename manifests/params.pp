@@ -10,13 +10,31 @@ class systemproxy::params {
     default                    => false,
   }
 
-  $no_proxy=[]
+  $no_proxy_domains=['localhost*','*.local','*.localdomain']
+  $no_proxy_nets=['169.254.0.0/16','127.0.0.0/8']
 
   $port='3128'
 
   $proto='http'
 
+  $gsettings=true
   $puppet=false
+  $wget=true
+
+  $pac_basedir  = "/opt/puppet-${module_name}"
+  $pac  = "${pac_basedir}/etc/proxy.pac"
+  $wpad = "${pac_basedir}/etc/wpad.dat"
+  $pac_uri  = "file://${pac}"
+  $wpad_uri = "file://${wpad}"
+
+  $owner = 'root'
+  $group = $::kernel ? {
+    /(Darwin|FreeBSD)/ => 'wheel',
+    'SunOS'            => 'bin',
+    default            => 'root',
+  }
+  $mode = '0644'
+  $dir_mode = '0755'
 
   $puppet_conf = $::kernel ? {
     'FreeBSD' => '/usr/local/etc/puppet/puppet.conf',

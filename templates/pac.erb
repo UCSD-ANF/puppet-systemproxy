@@ -1,0 +1,96 @@
+/* Managed by Puppet <%= module_name %>.
+ * <%= basedir %>/etc/proxy.pac aka
+ * <%= basedir %>/etc/wpad.dat
+ *
+ *  This script is written in JavaScript, and is designed to be
+ *  served up via a local file.  It is also suited to be served
+ *  via the standard proxy auto-config URLs:
+ *  http://proxy.<domain>/wpad.dat and http://wpad.<domain>/proxy.pac,
+ *
+ *  Note that this script does reverse DNS lookups and can therefore
+ *  run afoul of this bug:
+ *  https://bugzilla.mozilla.org/show_bug.cgi?id=235853 for details.
+ *  ...should one's DNS server has latency issues.
+ *
+ *  For easy debugging, one may set "alertOn = true", and see what messages
+ *  appear in the Error Console of one's Mozilla-based browser.
+ *
+ */
+function FindProxyForURL(url, host) {
+
+        var proxy_host = "<%= host %>";
+        var proxy_port = "<%= port %>";
+
+	// DEBUGGING: turn alerts on/off, here.
+	// Only seems to work with Mozilla variants; use with caution.
+<% if @alertOn and alertOn == true: -%>
+	var alertOn = true;
+<% else -%>
+	var alertOn = false;
+<% end -%>
+
+	// default proxy value is DIRECT
+	var returnVal = "DIRECT";
+
+        var directDomains = new Array(
+          <%= no_proxy_domains.map{ |i| "\t\t\"#{i}\"" }.join(",\n") %>
+        );
+        var directNets    = new Array(
+          <%= no_proxy_nets.map{    |i| "\t\t\"#{i}\"" }.join(",\n") %>
+        );
+
+	var len=directDomains.length;
+
+        // If we match any of our direct domains, return default value.
+	for(var i=0; i<len; i++) {
+		var domain = directDomains[i];
+		if ( shExpMatch(host, domain ) ) {
+			var alertMsg = domain + " host request.";
+
+			if ( alertOn ) {
+				alert("host:   " + host      );
+				alert("url:    " + url       );
+				alert("alert:  " + alertMsg  );
+				alert("return: " + returnVal );
+			}
+			return returnVal;
+		}
+	}
+
+	var len=directNets.length;
+
+        // If we match any of our direct nets, return default value.
+        // Note that this requires a reverse DNS lookup.  If your
+        // DNS server is slow/flaky, it will be a problem.  It is
+        // therefore much better to do this check after directDomains
+        // because of the high overhead of DNS reverse lookups.
+	for(var i=0; i<len; i++) {
+		var net = directNets[i];
+		if ( isInNet(host, net) ) {
+			var alertMsg = net + " host request.";
+
+			if ( alertOn ) {
+				alert("host:   " + host      );
+				alert("url:    " + url       );
+				alert("alert:  " + alertMsg  );
+				alert("return: " + returnVal );
+			}
+			return returnVal;
+		}
+	}
+
+	if ( isPlainHostName(host) ) {
+		var alertMsg = "Plain hostname request.";
+	} else { // all other requests go through the proxy server
+		var alertMsg = "Non-local request.";
+		returnVal="PROXY " + proxy_host + ":" + proxy_port;
+	}
+
+	if ( alertOn ) {
+		alert("host:   " + host      );
+		alert("url:    " + url       );
+		alert("alert:  " + alertMsg  );
+		alert("return: " + returnVal );
+	}
+	return returnVal;
+}
