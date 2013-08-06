@@ -10,13 +10,15 @@ class systemproxy (
   $puppet           = $systemproxy::params::puppet,
   $puppet_conf      = $systemproxy::params::puppet_conf,
   $shell_proto      = $systemproxy::params::shell_proto,
+  $networkservice   = 'Ethernet',
 ) inherits systemproxy::params {
 
   include stdlib
 
+  validate_array($shell_proto)
   validate_bool($manage_profile_d)
   validate_bool($puppet)
-  validate_string($no_proxy)
+  validate_array($no_proxy)
 
   $proxy = "${proto}://${host}:${port}/"
 
@@ -32,8 +34,9 @@ class systemproxy (
   @class { systemproxy::wget : }
 
   case $::osfamily  {
-    'FreeBSD' : { class { systemproxy::bsd : }    }
+    'Darwin'  : { class { systemproxy::darwin : } }
+    'FreeBSD' : { class { systemproxy::bsd    : } }
     'RedHat'  : { class { systemproxy::redhat : } }
-    default   : { }
+    default   : {                                 }
   }
 }

@@ -50,10 +50,10 @@ describe 'systemproxy', :type=>'class' do
       context "no_proxy" do
         let(:params){{
           :host     => 'proxy.example.com',
-          :no_proxy => '.example.com'
+          :no_proxy => [ '.example.com', 'another.example.com' ]
         }}
         it { should contain_file('/etc/profile.d/proxy.csh').with_content(
-          /setenv no_proxy ".example.com"/
+          /setenv no_proxy "\.example\.com,another\.example\.com"/
         )}
       end
 
@@ -71,16 +71,32 @@ describe 'systemproxy', :type=>'class' do
       end
 
       case oses[os][:osfamily]
-      when 'FreeBSD'
-        context "On a #{oses[os][:operatingsystem]} system" do
-          let(:params){{ :host => 'proxy.example.com', }}
-
-          it { should contain_file_line('FTP_PROXY entry for /etc/make.conf').with_line(
-            'FTP_PROXY=http://proxy.example.com:3128/'
+      when 'Darwin' then
+        context "and OS family is #{oses[os][:osfamily]}" do
+          let(:params){{
+            :host     => 'proxy.example.com',
+            :no_proxy => [ '.example.com', 'another.example.com' ]
+          }}
+          it { should contain_exec(
+            '/usr/sbin/networksetup -setsecurewebproxy Ethernet proxy.example.com 3128 off'
+          )}
+          it { should contain_exec(
+            '/usr/sbin/networksetup -setproxybypassdomains Ethernet Empty \'.example.com\' \'another.example.com\''
+          ).with_onlyif(
+            /egrep -v '\.example.com\|another\.example\.com'/
           )}
         end
-      when 'RedHat'
-        context "On a #{oses[os][:operatingsystem]} system" do
+      when 'FreeBSD' then
+        context "and OS family is #{oses[os][:osfamily]}" do
+          let(:params){{ :host => 'proxy.example.com', }}
+
+          it { should contain_file_line(
+            'export FTP_PROXY entry for /etc/make.conf').with_line(
+            'export FTP_PROXY=http://proxy.example.com:3128/'
+          )}
+        end
+      when 'RedHat' then
+        context "and OS family is #{oses[os][:osfamily]}" do
           let(:params){{ :host => 'proxy.example.com', }}
 
           it { should contain_file_line('RPM %_httpproxy').with_line(

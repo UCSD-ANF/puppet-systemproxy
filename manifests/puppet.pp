@@ -4,20 +4,22 @@
 # This class should only be called from init.pp
 class systemproxy::puppet {
 
+  # This defaults to 'absent'.  Do not override
+  # unless your proxy supports SSL on port 8140.
   $puppet_ensure = $systemproxy::puppet ? {
     true  => $systemproxy::ensure,
     false => 'absent',
   }
-  systemproxy::entry { 'proxy_host':
+  file_line { 'proxy_host for puppet.conf':
     ensure => $puppet_ensure,
     path   => $systemproxy::puppet_conf,
-    prefix => '    ',
-    value  => $systemproxy::host,
+    line   => "    proxy_host=${systemproxy::host}",
+    match  => 'proxy_host',
   }
-  systemproxy::entry { 'proxy_port':
+  file_line { 'proxy_port for puppet.conf':
     ensure => $puppet_ensure,
     path   => $systemproxy::puppet_conf,
-    prefix => '    ',
-    value  => $systemproxy::port,
+    line   => "    proxy_port=${systemproxy::host}",
+    match  => 'proxy_port',
   }
 }

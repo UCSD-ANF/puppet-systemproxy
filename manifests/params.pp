@@ -10,7 +10,7 @@ class systemproxy::params {
     default                    => false,
   }
 
-  $no_proxy=''
+  $no_proxy=[]
 
   $port='3128'
 

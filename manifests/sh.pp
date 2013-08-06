@@ -27,9 +27,10 @@ class systemproxy::sh {
   }
 
   # Set up Bourne/Bourne-Again shell proxy.
-  $delim     = '='
-  $protos    = prefix($systemproxy::shell_proto, 'export ')
-  $no_protos = prefix(['no_proxy','NO_PROXY'], 'export ')
+  $delim        = '='
+  $protos       = prefix($systemproxy::shell_proto, 'export ')
+  $no_protos    = prefix(['no_proxy','NO_PROXY'], 'export ')
+  $no_proxy_str = join($systemproxy::no_proxy,',')
   file { '/etc/profile.d/proxy.sh':
     ensure  => $systemproxy::ensure,
     content => template('systemproxy/proxy.erb'),

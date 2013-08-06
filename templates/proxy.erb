@@ -1,13 +1,11 @@
-# managed by puppet <%= module_name %>.
+# managed by Puppet <%= module_name %>.
 # Protocols to proxy:
 <% protos.each do |proto| -%>
 <%= proto %><%= delim %><%= scope.lookupvar('systemproxy::proxy') %>
 <% end -%>
-<% if scope.lookupvar('systemproxy::no_proxy') != '' %>
-# The no_proxy env variable doesn't take network ranges, so
-# we'll only turn off proxying for localhost, and hosts whose
-# IP returns a reverse DNS lookup in our domain.
+<% if scope.lookupvar('systemproxy::no_proxy').length > 0 then %>
+# Turn off proxying for these domains/subnets.
 <%  no_protos.each do |proto| -%>
-<%= proto %><%= delim %>"<%= scope.lookupvar('systemproxy::no_proxy') %>"
+<%= proto %><%= delim %>"<%= no_proxy_str %>"
 <%  end -%>
 <% end -%>
