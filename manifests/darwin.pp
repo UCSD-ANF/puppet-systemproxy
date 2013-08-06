@@ -16,10 +16,10 @@ class systemproxy::darwin {
   $service = $systemproxy::networkservice
 
   $setarg = join(suffix(prefix($bypass_arr,'\''),'\''),' ')
-  $getarg = join($bypass_arr,'|')
+  $getarg = join(suffix(prefix($bypass_arr,'-e \''),'\''),' ')
 
   $setargs = "${service} Empty ${setarg}"
-  $getargs = "${service} | egrep -v '${getarg}'"
+  $getargs = "${service} | fgrep -v ${getarg}"
 
   exec { "${networksetup} -setproxybypassdomains ${setargs}":
     onlyif => "${networksetup} -getproxybypassdomains ${getargs}",

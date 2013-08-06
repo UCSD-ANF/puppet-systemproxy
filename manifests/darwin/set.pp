@@ -14,7 +14,7 @@ define systemproxy::darwin::set (
     'off' => "${service} Empty",
   }
   $getargs = $state ? {
-    'on'  => "${service} | egrep -v '(${host}|${port})'",
+    'on'  => "${service} | fgrep -v -e '${host}' -e '${port}'",
     'off' => "${service} | grep -v '^Server: \$'",
   }
 
