@@ -61,9 +61,10 @@ class systemproxy (
   }
 
   case $::osfamily  {
-    'Darwin'  : { class { systemproxy::darwin : } }
-    'FreeBSD' : { class { systemproxy::bsd    : } }
-    'RedHat'  : { class { systemproxy::redhat : } }
+    'Darwin'  : { class { systemproxy::darwin  : } }
+    'FreeBSD' : { class { systemproxy::bsd     : } }
+    'RedHat'  : { class { systemproxy::redhat  : } }
+    'Solaris' : { class { systemproxy::solaris : } }
     default   : {                                 }
   }
 }

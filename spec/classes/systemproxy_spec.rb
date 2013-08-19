@@ -28,6 +28,11 @@ describe 'systemproxy', :type=>'class' do
       :osfamily        => 'RedHat',
       :kernel          => 'Linux',
     },
+    'Solaris' => {
+      :operatingsystem => 'Solaris',
+      :osfamily        => 'Solaris',
+      :kernel          => 'SunOS',
+    },
     'ubuntu' => {
       :operatingsystem => 'ubuntu',
       :osfamily        => 'Debian',
@@ -109,6 +114,14 @@ describe 'systemproxy', :type=>'class' do
           )}
           it { should contain_file_line('YUM global proxy').with_line(
             'proxy=http://proxy.example.com:3128/'
+          )}
+        end
+      when 'Solaris' then
+        context "and OS family is #{oses[os][:osfamily]}" do
+          let(:params){{ :host => 'proxy.example.com' }}
+
+          it { should contain_file_line('wgetopts for pkgutil').with_line(
+            'wgetopts=-U pkgutil -e ftp_proxy=http://proxy.example.com:3128/ -e http_proxy=http://proxy.example.com:3128/ -e https_proxy=http://proxy.example.com:3128/ -e no_proxy="localhost*,*.local,*.localdomain,169.254.0.0/16,127.0.0.0/8"'
           )}
         end
       end
