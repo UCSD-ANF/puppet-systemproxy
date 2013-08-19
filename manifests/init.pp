@@ -27,7 +27,7 @@ class systemproxy (
   validate_array($no_proxy_domains)
   validate_array($no_proxy_nets)
 
-  $no_proxy = concat($no_proxy_domains,$no_proxy_nets)
+  $no_proxy = flatten([$no_proxy_domains,$no_proxy_nets])
 
   $proxy = "${proto}://${host}:${port}/"
 
