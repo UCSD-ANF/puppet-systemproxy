@@ -3,12 +3,6 @@
 class systemproxy::csh {
   include stdlib
 
-  # Ensure profile.d dir.
-  file { "/etc/profile.d for ${name}":
-    ensure => 'directory',
-    path   => '/etc/profile.d',
-  }
-
   # Hack on the default files if we need/want to.
   if $systemproxy::manage_profile_d == true {
     # Add basic profile.d support to C shell.

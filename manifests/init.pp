@@ -47,6 +47,11 @@ class systemproxy (
   class { systemproxy::puppet : }
 
   # Manage Bourne/Bourne-Again/C shell
+  # Ensure profile.d dir.
+  file { "/etc/profile.d":
+    ensure => 'directory',
+    before => [ Class[systemproxy::sh], Class[systemproxy::csh] ],
+  }
   class { systemproxy::sh  : }
   class { systemproxy::csh : }
 
