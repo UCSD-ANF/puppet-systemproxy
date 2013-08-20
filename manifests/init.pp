@@ -48,7 +48,12 @@ class systemproxy (
 
   # Manage Bourne/Bourne-Again/C shell
   # Ensure profile.d dir.
-  file { "/etc/profile.d": ensure => 'directory', }
+  file { "/etc/profile.d":
+    owner  => $systemproxy::params::owner,
+    group  => $systemproxy::params::group,
+    mode   => $systemproxy::params::dir_mode,
+    ensure => 'directory',
+  }
   class { systemproxy::sh  :
     require => File['/etc/profile.d'],
   }

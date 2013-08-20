@@ -27,12 +27,8 @@ class systemproxy::params {
   $pac_uri  = "file://${pac}"
   $wpad_uri = "file://${wpad}"
 
-  $owner = 'root'
-  $group = $::kernel ? {
-    /(Darwin|FreeBSD)/ => 'wheel',
-    'SunOS'            => 'bin',
-    default            => 'root',
-  }
+  $owner = 0
+  $group = 0
   $mode = '0644'
   $dir_mode = '0755'
 

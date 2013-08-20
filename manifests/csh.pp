@@ -21,6 +21,9 @@ class systemproxy::csh {
   $no_proxy_str = join($systemproxy::no_proxy,',')
   file { '/etc/profile.d/proxy.csh':
     ensure  => $systemproxy::ensure,
+    owner   => $systemproxy::params::owner,
+    group   => $systemproxy::params::group,
+    mode    => $systemproxy::params::mode,
     content => template('systemproxy/proxy.erb'),
   }
 }

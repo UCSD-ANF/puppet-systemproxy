@@ -27,6 +27,9 @@ class systemproxy::sh {
   $no_proxy_str = join($systemproxy::no_proxy,',')
   file { '/etc/profile.d/proxy.sh':
     ensure  => $systemproxy::ensure,
+    owner   => $systemproxy::params::owner,
+    group   => $systemproxy::params::group,
+    mode    => $systemproxy::params::mode,
     content => template('systemproxy/proxy.erb'),
   }
 }

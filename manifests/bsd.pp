@@ -9,8 +9,8 @@ class systemproxy::bsd {
   # This will also always ensure permissions/custody.
   file { '/etc/make.conf':
     ensure  => 'present',
-    owner   => 'root',
-    group   => 'wheel',
+    owner   => 0,
+    group   => 0,
     mode    => '0644',
     replace => 'no',
   }
