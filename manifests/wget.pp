@@ -1,15 +1,7 @@
 # Set wget to use a proxy
 # This class should only be called from init.pp
 #
-# Expects package name 'wget' to be installed elsewhere.
-# Use an alias as needed.  E.G.
-#
-# $wget_name = $::osfamily ? {
-#   'FreeBSD' => 'ftp/wget',
-#   default   => 'wget',
-# }
-# package { 'wget'  : name => $wget_name, }
-#
+# Expects wget files to be installed elsewhere.
 class systemproxy::wget {
 
   include systemproxy::params

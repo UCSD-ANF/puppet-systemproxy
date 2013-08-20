@@ -68,10 +68,10 @@ describe 'systemproxy', :type=>'class' do
           :host             => 'proxy.example.com',
           :manage_profile_d => true,
         }}
-        it { should contain_file_line('enable /etc/profile.d for /etc/profile').with_line(
+        it { should contain_file_line('/etc/profile.d for /etc/profile').with_line(
           'source /etc/profile.d/*.sh'
         )}
-        it { should contain_file_line('enable /etc/profile.d for /etc/csh.cshrc').with_line(
+        it { should contain_file_line('/etc/profile.d for /etc/csh.cshrc').with_line(
           'source /etc/profile.d/*.csh'
         )}
       end

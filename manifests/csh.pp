@@ -6,7 +6,7 @@ class systemproxy::csh {
   # Hack on the default files if we need/want to.
   if $systemproxy::manage_profile_d == true {
     # Add basic profile.d support to C shell.
-    file_line { 'enable /etc/profile.d for /etc/csh.cshrc':
+    file_line { '/etc/profile.d for /etc/csh.cshrc':
       ensure  => $systemproxy::ensure,
       path    => '/etc/csh.cshrc',
       line    => 'source /etc/profile.d/*.csh',

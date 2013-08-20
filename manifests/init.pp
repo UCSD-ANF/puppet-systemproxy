@@ -14,10 +14,12 @@ class systemproxy (
   $shell_proto      = $systemproxy::params::shell_proto,
   $networkservice   = 'Ethernet',
   $gsettings        = $systemproxy::params::gsettings,
+  $wget             = $systemproxy::params::wget,
 ) inherits systemproxy::params {
 
   include stdlib
 
+  # Check input.
   validate_array($shell_proto)
   validate_bool($manage_profile_d)
   validate_bool($gsettings)
@@ -25,11 +27,11 @@ class systemproxy (
   validate_bool($wget)
   validate_array($no_proxy_domains)
   validate_array($no_proxy_nets)
+  validate_re($ensure,'^(abs|pres)ent$')
 
-  $no_proxy = flatten([$no_proxy_domains,$no_proxy_nets])
-
-  $proxy = "${proto}://${host}:${port}/"
-
+  # Class variables.
+  $proxy      = "${proto}://${host}:${port}/"
+  $no_proxy   = flatten([$no_proxy_domains,$no_proxy_nets])
   $dir_ensure = $ensure ? {
     'present' => 'directory',
     default   => $ensure,
@@ -37,6 +39,15 @@ class systemproxy (
   $link_ensure = $ensure ? {
     'present' => 'link',
     default   => $ensure,
+  }
+
+  # OS-specific setup.
+  case $::osfamily {
+    'Darwin'  : { class { systemproxy::darwin  : } }
+    'FreeBSD' : { class { systemproxy::bsd     : } }
+    'RedHat'  : { class { systemproxy::redhat  : } }
+    'Solaris' : { class { systemproxy::solaris : } }
+    default   : {                                 }
   }
 
   # Render Proxy Auto-Config (PAC) files.
@@ -53,7 +64,7 @@ class systemproxy (
     mode   => $systemproxy::params::dir_mode,
     ensure => 'directory',
   }
-  class { systemproxy::sh  :
+  class { systemproxy::sh :
     require => File['/etc/profile.d'],
   }
   class { systemproxy::csh :
@@ -65,14 +76,8 @@ class systemproxy (
     class { systemproxy::gsettings : }
   }
 
-  # Manage wget virtually.  Some other class will have to realize() it.
-  @class { systemproxy::wget : }
-
-  case $::osfamily  {
-    'Darwin'  : { class { systemproxy::darwin  : } }
-    'FreeBSD' : { class { systemproxy::bsd     : } }
-    'RedHat'  : { class { systemproxy::redhat  : } }
-    'Solaris' : { class { systemproxy::solaris : } }
-    default   : {                                 }
+  # Manage wget upon request.
+  if $wget {
+    class { systemproxy::wget : }
   }
 }
