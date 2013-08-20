@@ -14,7 +14,6 @@ class systemproxy (
   $shell_proto      = $systemproxy::params::shell_proto,
   $networkservice   = 'Ethernet',
   $gsettings        = $systemproxy::params::gsettings,
-  $wget             = $systemproxy::params::wget,
 ) inherits systemproxy::params {
 
   include stdlib
@@ -66,10 +65,8 @@ class systemproxy (
     class { systemproxy::gsettings : }
   }
 
-  # Manage wget.
-  if $wget == true {
-    class { systemproxy::wget : }
-  }
+  # Manage wget virtually.  Some other class will have to realize() it.
+  @class { systemproxy::wget : }
 
   case $::osfamily  {
     'Darwin'  : { class { systemproxy::darwin  : } }
