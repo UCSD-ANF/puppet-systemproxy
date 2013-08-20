@@ -19,7 +19,6 @@ class systemproxy::wget {
     path    => $systemproxy::params::wgetrc,
     line    => 'use_proxy = on',
     match   => '^use_proxy',
-    require => Package['wget'],
   }->
   file_line { 'ftp_proxy for wget':
     ensure => $systemproxy::ensure,
