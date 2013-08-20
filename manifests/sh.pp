@@ -28,6 +28,5 @@ class systemproxy::sh {
   file { '/etc/profile.d/proxy.sh':
     ensure  => $systemproxy::ensure,
     content => template('systemproxy/proxy.erb'),
-    require => File["/etc/profile.d for ${name}"],
   }
 }

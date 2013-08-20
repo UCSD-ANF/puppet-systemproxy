@@ -48,12 +48,13 @@ class systemproxy (
 
   # Manage Bourne/Bourne-Again/C shell
   # Ensure profile.d dir.
-  file { "/etc/profile.d":
-    ensure => 'directory',
-    before => [ Class[systemproxy::sh], Class[systemproxy::csh] ],
+  file { "/etc/profile.d": ensure => 'directory', }
+  class { systemproxy::sh  :
+    require => File['/etc/profile.d'],
   }
-  class { systemproxy::sh  : }
-  class { systemproxy::csh : }
+  class { systemproxy::csh :
+    require => File['/etc/profile.d'],
+  }
 
   # Manage GNOME system proxy
   if $::kernel == 'Linux' and $gsettings == true {
