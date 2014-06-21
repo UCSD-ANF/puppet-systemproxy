@@ -18,12 +18,12 @@
  */
 function FindProxyForURL(url, host) {
 
-        var proxy_host = "<%= host %>";
-        var proxy_port = "<%= port %>";
+        var proxy_host = "<%= @host %>";
+        var proxy_port = "<%= @port %>";
 
 	// DEBUGGING: turn alerts on/off, here.
 	// Only seems to work with Mozilla variants; use with caution.
-<% if @alertOn and alertOn == true: -%>
+<% if @alertOn and @alertOn == true then -%>
 	var alertOn = true;
 <% else -%>
 	var alertOn = false;
